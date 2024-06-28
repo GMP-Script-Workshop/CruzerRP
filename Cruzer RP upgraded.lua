@@ -1,33 +1,33 @@
---Napisane przez V0ID'a na licencji CC-BY-SA (u¿ycie zezwolone tylko poprzez uwzglêdnienie autora w tekœcie w "OnPlayerConnect")
-local Player = {}
-local Draws = {} -- Draws'y wstawimy do jednej tablicy
-local Cmds = {}
-local Classes = {}
+--Napisane przez V0ID'a na licencji CC-BY-SA (uÅ¼ycie zezwolone tylko poprzez uwzglÄ™dnienie autora w tekÅ›cie w "OnPlayerConnect")
+local Player = {};
+local Draws = {}; -- Draws'y wstawimy do jednej tablicy
+local Cmds = {};
+local Classes = {};
 
---Klasy liderów
-local Leaders = {11, 12, 7, 4, 13, 22, 31, 32, 36}
+--Klasy liderÃ³w
+local Leaders = {11, 12, 7, 4, 13, 22, 31, 32, 36};
 
 --Timer
-SetTimer("Timer_All", 3 * 60000, 1)
+SetTimer("Timer_All", 3 * 60000, 1);
 
 -- Szity od drawow
 function GetDraw(drawname)
 	for i, v in ipairs(Draws) do
 		if v.name == drawname then
-			return v.id
+			return v.id;
 		end
 	end
 end
 
 function AddDraw(drawid, drawname)
-	table.insert(Draws, { id = drawid, name = drawname})
+	table.insert(Draws, { id = drawid, name = drawname});
 end
 
 function RemDraw(drawname)
 	for i, v in ipairs(Draws) do
 		if v.name == drawname then
-			DestroyDraw(v.drawid)
-			table.remove(Draws, i)
+			DestroyDraw(v.drawid);
+			table.remove(Draws, i);
 		end
 	end
 end
@@ -36,7 +36,7 @@ end
 function GetPlayerIdByName(name)
 	for i = 0, GetMaxPlayers() -1 do
 		if GetPlayerName(i) == name then
-			return i
+			return i;
 		end
 	end
 	
@@ -46,111 +46,116 @@ end
 
 -- Struktury graczy
 for i = 0, GetMaxPlayers() - 1 do
-	Player[i] = {}
-	Player[i].logged = false
-	Player[i].password = nil
-	Player[i].class = 0
-	Player[i].moderator = 0 --Jest moderatora³kê?
-	Player[i].guild = -1 --Brak przyzn
-	Player[i].Overlay = nil
-	Player[i].seepm = false
+	Player[i] = {};
+	Player[i].logged = false;
+	Player[i].password = nil;
+	Player[i].class = 0;
+	Player[i].moderator = 0; --Jest moderatoraÅ‚kÄ™?
+	Player[i].guild = -1; --Brak przyzn
+	Player[i].Overlay = nil;
+	Player[i].seepm = false;
 		
 end
 	
-AddPlayerClass("PC_HERO",5401.4033203125,285.74258422852,-3149.1264648438,0,5401.4033203125,285.74258422852,-3149.1264648438,0)
+AddPlayerClass("PC_HERO",5401.4033203125,285.74258422852,-3149.1264648438,0,5401.4033203125,285.74258422852,-3149.1264648438,0);
 
 function OnGamemodeInit()
 	
-	EnableChat(0)
-	OpenLocks(1)
-	SetGamemodeName("http://cruzer-rp.y0.pl/")
-	SetServerDescription("******************************\n*Administracja: V0ID, DragonBess *\n            * Quarchodron *\n******************************")
-	print "MyrtanaRP Gamemode v2, Re-loaded"
+	EnableChat(0);
+	OpenLocks(1);
+	SetGamemodeName("eRPe");
+	
+	print("GM has been initialize.");
 end
 
 function OnPlayerConnect(playerid)
-	SendPlayerMessage(playerid, 0, 255,0, "Gamemode stworzony przez V0ID'a.")
-	SendPlayerMessage(playerid, 255, 145, 0, "Witaj na serwerze Cruzer RolePlay!")
-	SendPlayerMessage(playerid, 255, 145, 0, "Wpisz /pomoc aby dowiedzieæ siê jak graæ na serwerze, powodzenia!")
+	SendPlayerMessage(playerid, 0, 255, 0, "Gamemode stworzony przez V0ID'a, nieznacznie zmodyfikowany przez Czytaj NoÅ‚ Fejs'a.");
+	SendPlayerMessage(playerid, 0, 255, 0, "PamiÄ™taj, Å¼e Czytaj NoÅ‚ Fejs nie jest (i nigdy nie bÄ™dzie) czÅ‚onkiem ekipy tego serwera.");
+	SendPlayerMessage(playerid, 255, 145, 0, "Witaj na serwerze PotÄ™ga Koloni RolePlay!");
+	SendPlayerMessage(playerid, 255, 145, 0, "Wpisz /pomoc aby dowiedzieÄ‡ siÄ™ jak graÄ‡ na serwerze!");
 	
-	if IsNPC(playerid) == 0 then
-		local fRead = io.open(GetPlayerName(playerid)..".acnt", "r+")
-		if fRead then
-			SendPlayerMessage(playerid, 111, 255, 0, "Masz ju¿ konto na serwerze: wpisz /zaloguj has³o")
-			fRead:close()
-		else
-			SendPlayerMessage(playerid, 239, 255, 0, "Nie masz konta na serwerze: wpisz /zarejestruj has³o")
-		end
-		SetPlayerAdditionalVisual(playerid, "HUM_BODY_NAKED0", 2, "HUM_HEAD_BALD", 17)
-	end
+	SendPlayerMessage(playerid, 0, 255, 0, "Wpisz /n twoja_nazwa aby ustawiÄ‡ nazwÄ™ postaci");
+	
 	
 	--Kolor nicku (w sensie ze nie zalogowany)
-	SetPlayerColor(playerid, 0, 255, 0)
+	SetPlayerColor(playerid, 0, 255, 0);
 	--Drawy
-	ShowDraw(playerid, GetDraw("server_name"))
-	ShowDraw(playerid, GetDraw("website"))
+	ShowDraw(playerid, GetDraw("server_name"));
+	ShowDraw(playerid, GetDraw("website"));
 	
 end
 
 function OnPlayerText(playerid, text)
 	if Player[playerid].logged == true then
-	local msgType = GetChatMessageType(text)
+	local msgType = GetChatMessageType(text);
 		if msgType == "RP" then
-			for i = 0, GetMaxPlayers() -1 do
-				if GetDistancePlayers(playerid, i) < 1000 then
-					SendPlayerMessage(i, 253, 255, 176, string.format("%s %s %s", GetPlayerName(playerid), "mówi", text)) 
+			for i = 0, GetMaxPlayers() - 1 do
+				if IsNPC(i) == 0 then
+					if i == playerid then
+						SendPlayerMessage(i, 255, 255, 255, string.format("%s %s %s %s %s %s","(", playerid, ")", GetPlayerName(playerid), "mÃ³wi:", text));
+					else
+					if GetPlayerWorld(playerid) == GetPlayerWorld(i) then
+						if GetDistancePlayers(playerid, i) < 1000 then								
+							SendPlayerMessage(i, 230, 230, 230, string.format("%s %s %s %s %s %s","(", playerid, ")", GetPlayerName(playerid), "mÃ³wi:", text));
+						elseif GetDistancePlayers(playerid, i) > 1000 and GetDistancePlayers(playerid, i) < 1250 then
+							SendPlayerMessage(i, 220, 220, 220, string.format("%s %s", "KtoÅ› w oddali mÃ³wi:", text));
+						end
+						
+						LogString("Logs_Czat", ""..GetPlayerName(playerid).." mÃ³wi: "..text.."");
+					end
 				end
-			end
+			end	
+		end
 		elseif msgType == "SCREAM" then
-			text = text:gsub("^.", " ")
+			text = text:gsub("^.", " ");
 			for i = 0, GetMaxPlayers() - 1 do
 				if GetDistancePlayers(playerid, i) < 3000 then
-					SendPlayerMessage(i, 242, 8, 8, string.format("%s %s%s", GetPlayerName(playerid), "krzyczy:", text))
+					SendPlayerMessage(i, 242, 8, 8, string.format("%s %s%s", GetPlayerName(playerid), "krzyczy:", text));
 				end
 			end
 		elseif msgType == "TO" then
-			text = text:gsub("^.", " ")
+			text = text:gsub("^.", " ");
 				for i = 0, GetMaxPlayers() -1 do
 					if GetDistancePlayers(playerid, i) < 1000 then
-						SendPlayerMessage(i, 47, 242, 8, string.format("%s (%s) ", text, GetPlayerName(playerid)))
+						SendPlayerMessage(i, 47, 242, 8, string.format("%s (%s) ", text, GetPlayerName(playerid)));
 					end
 				end
 		elseif msgType == "OOC" then
-			text = text:gsub("^.", " ")
+			text = text:gsub("^.", " ");
 			for i = 0, GetMaxPlayers() -1 do
 				if GetDistancePlayers(playerid, i) < 1000 then
-					SendPlayerMessage(i, 255, 255, 0, string.format("%s  ((%s:%s)) ", "(OOC)", GetPlayerName(playerid), text))
+					SendPlayerMessage(i, 255, 255, 0, string.format("%s  ((%s:%s)) ", "(OOC)", GetPlayerName(playerid), text));
 				end
 			end
 		elseif msgType == "ME" then
-			text = text:gsub("^.", " ")
+			text = text:gsub("^.", " ");
 			for i = 0, GetMaxPlayers() -1 do
 				if GetDistancePlayers(playerid, i) < 1000 then
-					SendPlayerMessage(i, 242, 86, 8, string.format("# %s%s # ", GetPlayerName(playerid), text))
+					SendPlayerMessage(i, 242, 86, 8, string.format("# %s%s # ", GetPlayerName(playerid), text));
 				end
 			end
 		end
 	else
-		SendPlayerMessage(playerid, 255, 0, 0, "Zaloguj siê aby móc pisaæ")
+		SendPlayerMessage(playerid, 255, 0, 0, "Zaloguj siÄ™ aby mÃ³c pisaÄ‡");
 	end
 end
 
 function OnPlayerDisconnect(playerid, reason)
 
 	if Player[playerid].logged == true then
-		SaveAccount(playerid)
-		Player[playerid].logged = false
-		Player[playerid].class = 0
-		Player[playerid].password = nil
-		Player[playerid].moderator = 0
-		Player[playerid].guild = -1
-		Player[playerid].seepm = false
-		SendMessageToAll(255, 0, 0, string.format("%s %s", GetPlayerName(playerid), "od³¹czy³(a) siê od gry"))
+		SaveAccount(playerid);
+		Player[playerid].logged = false;
+		Player[playerid].class = 0;
+		Player[playerid].password = nil;
+		Player[playerid].moderator = 0;
+		Player[playerid].guild = -1;
+		Player[playerid].seepm = false;
+		SendMessageToAll(255, 0, 0, string.format("%s %s", GetPlayerName(playerid), "odÅ‚Ä…czyÅ‚(a) siÄ™ od gry"));
 	end
 	
 	--Drawy
-	HideDraw(playerid, GetDraw("server_name"))
-	HideDraw(playerid, GetDraw("website"))
+	HideDraw(playerid, GetDraw("server_name"));
+	HideDraw(playerid, GetDraw("website"));
 end
 
 function OnPlayerSpawn(playerid, classid)
@@ -158,49 +163,45 @@ function OnPlayerSpawn(playerid, classid)
 		for i = 0, GetMaxPlayers() -1 do
 			if IsPlayerConnected(i) == 1 then
 				if i ~= playerid then
-					SendPlayerMessage(i, 0, 255, 0, string.format("%s %s", GetPlayerName(playerid), "do³¹czy³(a) do gry!"))
+					SendPlayerMessage(i, 0, 255, 0, string.format("%s %s", GetPlayerName(playerid), "doÅ‚Ä…czyÅ‚(a) do gry!"));
 				end
 			end	
 		end
-		SetPlayerPos(playerid, 5401.4033203125,285.74258422852,-3149.1264648438)
+		SetPlayerPos(playerid,-29351.267578,-673.286804, 10012.596680);
 	else
-		SetPlayerPos(playerid, 38601.9140625, 3911.5217285156, -1280.5793457031)
+		SetPlayerPos(playerid,-29351.267578,-673.286804, 10012.596680);
 		for i, v in ipairs(Classes) do
 			if v.classid == Player[playerid].class then
-				ClearInventory(playerid)
-				v.func(playerid)
+				ClearInventory(playerid);
+				v.func(playerid);
 			end
 		end
 	end
 end
 
 function OnPlayerChangeClass(playerid, classid)
-	SpawnPlayer(playerid)
+	SpawnPlayer(playerid);
 	if Player[playerid].logged == false and IsNPC(playerid) == 0 then
-		FreezePlayer(playerid, 1)
+		FreezePlayer(playerid, 1);
 	end
 end
 
 function OnPlayerEnterWorld(playerid, world)
-	if world ~= "NEWWORLD\\NEWWORLD.ZEN" then
-		SetPlayerWorld(playerid, "NEWWORLD\\NEWWORLD.ZEN", "START")
-		SetPlayerPos(playerid, 38601.9140625, 3911.5217285156, -1280.5793457031)	
-	end
 end
 
 function OnPlayerChangeInstance(playerid, currInstance, oldInstance)
 	if IsNPC(playerid) == 0 then
 		if currInstance ~= "PC_HERO" then
-			ExitGame(playerid)
-			Kick(playerid)
+			ExitGame(playerid);
+			Kick(playerid);
 		end
 	end
 end
 
 function OnPlayerHit(playerid, killerid)
 	if Player[killerid].class == 0 then
-		ExitGame(killerid)
-		Kick(killerid)
+		ExitGame(killerid);
+		Kick(killerid);
 	end
 end
 
@@ -208,7 +209,7 @@ function OnPlayerWeaponMode(playerid, weaponmode)
 	if IsNPC(playerid) == 0 then
 		if Player[playerid].class == 0 then
 			if weaponmode ~= WEAPON_NONE then
-				SendPlayerMessage(playerid, 255, 0, 0, "Jesteœ zbyt s³aby ¿eby walczyæ")
+				SendPlayerMessage(playerid, 255, 0, 0, "JesteÅ› zbyt sÅ‚aby Å¼eby walczyÄ‡")
 				SetPlayerWeaponMode(playerid, WEAPON_NONE)
 			end
 		else
@@ -249,14 +250,34 @@ function OnPlayerWeaponMode(playerid, weaponmode)
 end
 
 function OnPlayerCommandText(playerid, cmdtext)
-	local cmd, params = GetCommand(cmdtext)
+	local cmd, params = GetCommand(cmdtext);
+	local result, id = sscanf(params,"d");
 	
 	for i, v in ipairs(Cmds) do
 		if cmd == v.cmd then
-			v.func(playerid, cmd, params)
+			v.func(playerid, cmd, params);
 		end
 	end
 	
+	if cmd == "/b" then
+		CMD_OOC(playerid, params);
+	elseif cmd == "/me" or cmd == "/ja" then
+		CMD_ME(playerid, params);
+	elseif cmd == "/do" then
+		CMD_DO(playerid, params);
+	elseif cmd == "/sz" or cmd == "/c" then
+		CMD_C(playerid, params);
+	elseif cmd == "/k" then
+		CMD_S(playerid, params);	
+	elseif cmd == "/1" then
+		CMD_VoidTest1(id);
+	elseif cmd == "/2" then
+		CMD_VoidTest2(id);
+	elseif cmd == "/pos" then
+		local x,y,z = GetPlayerPos(playerid);
+		local message = string.format("%s %f %f %f", "Kordy to", x, y, z);
+		SendPlayerMessage(playerid, 0, 255, 0, message);
+	end
 end
 
 --Rejestracja
@@ -266,24 +287,24 @@ function CMD_Register(playerid, cmd, params)
 		if Player[playerid].logged == false then
 			local fRead = io.open(GetPlayerName(playerid)..".acnt", "r+")
 			if fRead then
-				SendPlayerMessage(playerid, 255, 0, 0, "Posiadasz ju¿ konto na serwerze. Wpisz /zaloguj has³o aby siê zalogowaæ")
+				SendPlayerMessage(playerid, 255, 0, 0, "Posiadasz juÅ¼ konto na serwerze. Wpisz /zaloguj hasÅ‚o aby siÄ™ zalogowaÄ‡")
 				fRead:close()
 			else
 				Player[playerid].logged = true
 				Player[playerid].password = pass
 				FreezePlayer(playerid, 0)
 				SetPlayerPos(playerid, 38601.9140625, 3911.5217285156, -1280.5793457031)
-				SendPlayerMessage(playerid, 179, 0, 255, "Zarejestrowano pomyœlnie, ¿yczymy dobrej zabawy")
-				GameTextForPlayer(playerid, 1500, 7000, "Zapraszamy na nasz¹ stronê http://cruzer-rp.y0.pl/", "Font_Old_10_White_Hi.TGA", 0, 255, 255, 1000 * 10)
+				SendPlayerMessage(playerid, 179, 0, 255, "Zarejestrowano pomyÅ›lnie, Å¼yczymy dobrej zabawy")
+				GameTextForPlayer(playerid, 1500, 7000, "Zapraszamy na naszÄ… stronÄ™ http://potegakhorinis.y0.pl/", "Font_Old_10_White_Hi.TGA", 0, 255, 255, 3000)
 				SetPlayerColor(playerid, 255, 255, 255)
 				Class_NewPlayer(playerid)
 				SaveAccount(playerid)
 			end
 		else
-			SendPlayerMessage(playerid, 255, 0, 0, "Jesteœ ju¿ zalogowany!")
+			SendPlayerMessage(playerid, 255, 0, 0, "JesteÅ› juÅ¼ zalogowany!")
 		end
 	else
-		SendPlayerMessage(playerid, 255, 0, 0, "B³êdna sk³adnia komendy wpisz /zarejestruj has³o");
+		SendPlayerMessage(playerid, 255, 0, 0, "BÅ‚Ä™dna skÅ‚adnia komendy wpisz /zarejestruj hasÅ‚o");
 	end
 end
 --Logowanie
@@ -300,31 +321,31 @@ function CMD_LogIn(playerid, cmd, params)
 						Player[playerid].logged = true
 						Player[playerid].password = pass
 						FreezePlayer(playerid, 0)
-						SetPlayerPos(playerid, 38601.9140625, 3911.5217285156, -1280.5793457031)
+						SetPlayerWorld(playerid, "COLONY.ZEN", "START");
 						LoadAccount(playerid)
-						SendPlayerMessage(playerid, 0, 255, 154, "Zosta³eœ zalogowany")
-						GameTextForPlayer(playerid, 1500, 7000, "Zapraszamy na nasz¹ stronê http://cruzer-rp.y0.pl/", "Font_Old_10_White_Hi.TGA", 0, 255, 255, 1000 * 10)
+						SendPlayerMessage(playerid, 0, 255, 154, "ZostaÅ‚eÅ› zalogowany")
+						GameTextForPlayer(playerid, 1500, 7000, "Zapraszamy na naszÄ… stronÄ™ http://potegakhorinis.y0.pl/", "Font_Old_10_White_Hi.TGA", 0, 255, 255, 3000)
 						SetPlayerColor(playerid, 255, 255, 255)
 					else
-						SendPlayerMessage(playerid, 255, 0, 0, "B³êdne has³o! Podaj te, podane podczas rejestracji.")
-						SendPlayerMessage(playerid, 255, 0, 0, "Je¿eli nie pamiêtasz has³a, powiadom administratora serwera.")
+						SendPlayerMessage(playerid, 255, 0, 0, "BÅ‚Ä™dne hasÅ‚o! Podaj te, podane podczas rejestracji.")
+						SendPlayerMessage(playerid, 255, 0, 0, "JeÅ¼eli nie pamiÄ™tasz hasÅ‚a, powiadom administratora serwera.")
 					end
 			else
-				SendPlayerMessage(playerid, 255, 0, 0, "Nie masz konta na serwerze wpisz /zarejestruj has³o")
+				SendPlayerMessage(playerid, 255, 0, 0, "Nie masz konta na serwerze wpisz /zarejestruj hasÅ‚o")
 			end
 		else
-			SendPlayerMessage(playerid, 255, 0, 0, "Jesteœ ju¿ zalogowany!")
+			SendPlayerMessage(playerid, 255, 0, 0, "JesteÅ› juÅ¼ zalogowany!")
 		end
 	else
-		SendPlayerMessage(playerid, 255, 0, 0, "B³êdna sk³adnia komendy wpisz /zaloguj has³o");
+		SendPlayerMessage(playerid, 255, 0, 0, "BÅ‚Ä™dna skÅ‚adnia komendy wpisz /zaloguj hasÅ‚o");
 	end
 end
 
-function CMD_GMSG(playerid, cmd, params) --Wiadomoœæ do gildii
+function CMD_GMSG(playerid, cmd, params) --WiadomoÅ›Ä‡ do gildii
 	local result, message = sscanf(params, "s")
 	if result == 1 then --205, 133, 63
 		if Player[playerid].guild == -1 then
-			SendPlayerMessage(playerid, 255, 0, 0, "Nie nale¿ysz do ¿adnej oficjalnej gildii.")
+			SendPlayerMessage(playerid, 255, 0, 0, "Nie naleÅ¼ysz do Å¼adnej oficjalnej gildii.")
 		else
 			for i = 0, GetMaxPlayers()-1 do
 				if IsPlayerConnected(i) == 1 then
@@ -335,7 +356,7 @@ function CMD_GMSG(playerid, cmd, params) --Wiadomoœæ do gildii
 			end
 		end
 	else
-		SendPlayerMessage(playerid, 255, 0, 0, "U¿yj /gmsg wiadomoœæ")
+		SendPlayerMessage(playerid, 255, 0, 0, "UÅ¼yj /gmsg wiadomoÅ›Ä‡")
 	end
 end
 
@@ -352,14 +373,14 @@ function CMD_PM(playerid, cmd, params)
 						
 							for i = 0, GetMaxPlayers() - 1 do -- Info do adma
 								if IsPlayerAdmin(i) == 1 and i ~= playerid and i ~= id and Player[i].seepm == true then
-									SendPlayerMessage(i, 0, 255, 94, "Podgl¹d (PM)| od "..GetPlayerName(playerid).."|"..playerid.." do "..GetPlayerName(id).."|"..id..": "..msg)
+									SendPlayerMessage(i, 0, 255, 94, "PodglÄ…d (PM)| od "..GetPlayerName(playerid).."|"..playerid.." do "..GetPlayerName(id).."|"..id..": "..msg)
 								end
 							end
 				else
-					SendPlayerMessage(playerid, 255, 0, 0, "Ten gracz nie jest po³¹czony, lub piszesz do siebie.")
+					SendPlayerMessage(playerid, 255, 0, 0, "Ten gracz nie jest poÅ‚Ä…czony, lub piszesz do siebie.")
 				end
 		else
-			SendPlayerMessage(playerid, 255, 0, 0, "U¿yj: /pm id wiadomosc")
+			SendPlayerMessage(playerid, 255, 0, 0, "UÅ¼yj: /pm id wiadomosc")
 		end
 end
 
@@ -369,62 +390,62 @@ function CMD_VIS(playerid, cmd, params)
 		local result, body, bodytex, head, headtex = sscanf(params, "dddd")
 			if result == 1 then
 				SetPlayerAdditionalVisual(playerid, bodyModel[body], bodytex, headModel[head], headtex)
-				SendPlayerMessage(playerid, 0, 255, 0, "Wygl¹d zmieniony!")
+				SendPlayerMessage(playerid, 0, 255, 0, "WyglÄ…d zmieniony!")
 			else
-				SendPlayerMessage(playerid, 255, 0, 0, "U¿yj /wyglad modelCia³a(1-2), teksturaCia³a(0-12), modelG³owy(1-7), teksturaG³owy(0-162)")
+				SendPlayerMessage(playerid, 255, 0, 0, "UÅ¼yj /wyglad modelCiaÅ‚a(1-2), teksturaCiaÅ‚a(0-12), modelGÅ‚owy(1-7), teksturaGÅ‚owy(0-162)")
 			end
 end
 
 function CMD_Help(playerid, cmd, params)
-	local result, page = sscanf(params, "d")
+	local result, page = sscanf(params, "d");
 	
 	if page == 1 then
-		SendPlayerMessage(playerid, 255, 255, 0, "Komendy serwera CruzerRP")
-		SendPlayerMessage(playerid, 255, 255, 0, "Zapoznaj siê z nowym czatem rp opartym na prefix'ach:")
-		SendPlayerMessage(playerid, 255, 255, 0, "@ - Wiadomoœæ zostanie wyœwietlona jako ooc ")
-		SendPlayerMessage(playerid, 255, 255, 0, ". - Wiadomoœæ zostanie wyœwietlona jako do ")
-		SendPlayerMessage(playerid, 255, 255, 0, "! - Wiadomoœæ zostanie wyœwietlona jako krzyk ")
-		SendPlayerMessage(playerid, 255, 255, 0, "# - Wiadomoœæ zostanie wyœwietlona jako me(ja) ")
-		SendPlayerMessage(playerid, 255, 255, 0, "Dalsza pomoc: /pomoc 2 ")
+		SendPlayerMessage(playerid, 255, 255, 0, "Komendy serwera PotÄ™ga Kolonii RP");
+		SendPlayerMessage(playerid, 255, 255, 0, "Zapoznaj siÄ™ z nowym czatem rp opartym na prefix'ach:");
+		SendPlayerMessage(playerid, 255, 255, 0, "@ - WiadomoÅ›Ä‡ zostanie wyÅ›wietlona jako ooc ");
+		SendPlayerMessage(playerid, 255, 255, 0, ". - WiadomoÅ›Ä‡ zostanie wyÅ›wietlona jako do ");
+		SendPlayerMessage(playerid, 255, 255, 0, "! - WiadomoÅ›Ä‡ zostanie wyÅ›wietlona jako krzyk ");
+		SendPlayerMessage(playerid, 255, 255, 0, "# - WiadomoÅ›Ä‡ zostanie wyÅ›wietlona jako me(ja) ");
+		SendPlayerMessage(playerid, 255, 255, 0, "Dalsza pomoc: /pomoc 2 ");
 	elseif page == 2 then
-		SendPlayerMessage(playerid, 255, 255, 0, "Komendy serwera CruzerRP")
-		SendPlayerMessage(playerid, 255, 255, 0, "/pm id/nick_gracza - Prywatna wiadomoœæ")
-		SendPlayerMessage(playerid, 255, 255, 0, "/adm wiadomoœæ - Wiadomoœæ do administratora (ujrz¹ j¹ wszyscy administratorzy online)")
-		SendPlayerMessage(playerid, 255, 255, 0, "/wyglad modelCia³a(1-2) teksturaCia³a(0-12) modelG³owy(1-7) teksturaG³owy(0-162) - Zmiana wygl¹du")
-		SendPlayerMessage(playerid, 255, 255, 0, "/gmsg wiadomoœæ - Wiadomoœæ do gildii")
-		SendPlayerMessage(playerid, 255, 255, 0, "/zmienhaslo stareHas³o noweHas³o - zmiana has³a")
-		SendPlayerMessage(playerid, 255, 255, 0, "/m.pomoc - Komendy moderatora")
-		SendPlayerMessage(playerid, 255, 255, 0, "/anihelp - Lista animacji")
+		SendPlayerMessage(playerid, 255, 255, 0, "Komendy serwera PotÄ™ga Kolonii RP");
+		SendPlayerMessage(playerid, 255, 255, 0, "/pm id/nick_gracza - Prywatna wiadomoÅ›Ä‡");
+		SendPlayerMessage(playerid, 255, 255, 0, "/adm wiadomoÅ›Ä‡ - WiadomoÅ›Ä‡ do administratora (ujrzÄ… jÄ… wszyscy administratorzy online)");
+		SendPlayerMessage(playerid, 255, 255, 0, "/wyglad modelCiaÅ‚a(1-2) teksturaCiaÅ‚a(0-12) modelGÅ‚owy(1-7) teksturaGÅ‚owy(0-162) - Zmiana wyglÄ…du");
+		SendPlayerMessage(playerid, 255, 255, 0, "/gmsg wiadomoÅ›Ä‡ - WiadomoÅ›Ä‡ do gildii");
+		SendPlayerMessage(playerid, 255, 255, 0, "/zmienhaslo stareHasÅ‚o noweHasÅ‚o - zmiana hasÅ‚a");
+		SendPlayerMessage(playerid, 255, 255, 0, "/m.pomoc - Komendy moderatora");
+		SendPlayerMessage(playerid, 255, 255, 0, "/anihelp - Lista animacji");
 	else
-		SendPlayerMessage(playerid, 255, 255, 0, "Komendy serwera CruzerRP")
-		SendPlayerMessage(playerid, 255, 255, 0, "Zapoznaj siê z nowym czatem rp opartym na prefix'ach:")
-		SendPlayerMessage(playerid, 255, 255, 0, "@ - Wiadomoœæ zostanie wyœwietlona jako ooc ")
-		SendPlayerMessage(playerid, 255, 255, 0, ". - Wiadomoœæ zostanie wyœwietlona jako do ")
-		SendPlayerMessage(playerid, 255, 255, 0, "! - Wiadomoœæ zostanie wyœwietlona jako krzyk ")
-		SendPlayerMessage(playerid, 255, 255, 0, "# - Wiadomoœæ zostanie wyœwietlona jako me(ja) ")
-		SendPlayerMessage(playerid, 255, 255, 0, "Dalsza pomoc: /pomoc 2 ")
+		SendPlayerMessage(playerid, 255, 255, 0, "Komendy serwera PotÄ™ga Kolonii RP");
+		SendPlayerMessage(playerid, 255, 255, 0, "Zapoznaj siÄ™ z nowym czatem rp opartym na prefix'ach:");
+		SendPlayerMessage(playerid, 255, 255, 0, "@ - WiadomoÅ›Ä‡ zostanie wyÅ›wietlona jako ooc ");
+		SendPlayerMessage(playerid, 255, 255, 0, ". - WiadomoÅ›Ä‡ zostanie wyÅ›wietlona jako do ");
+		SendPlayerMessage(playerid, 255, 255, 0, "! - WiadomoÅ›Ä‡ zostanie wyÅ›wietlona jako krzyk ");
+		SendPlayerMessage(playerid, 255, 255, 0, "# - WiadomoÅ›Ä‡ zostanie wyÅ›wietlona jako me(ja) ");
+		SendPlayerMessage(playerid, 255, 255, 0, "Dalsza pomoc: /pomoc 2 ");
 	end
-end
+end 
 
 function CMD_MHelp(playerid, cmd, params)
 	local result, page = sscanf(params, "d")
 	
 	if IsPlayerAdmin(playerid) == 1 or Player[playerid].moderator == 1 then
 		if page == 1 then
-			SendPlayerMessage(playerid, 255, 255, 0, "Komendy moderatora na serwerzer CruzerRP")
+			SendPlayerMessage(playerid, 255, 255, 0, "Komendy moderatora na serwerzer PotÄ™ga Kolonii eRPe.")
 			SendPlayerMessage(playerid, 255, 255, 0, "/awans idgracza idklasy - Zmiana klasy")
-			SendPlayerMessage(playerid, 255, 255, 0, "/post wiadomoœæ - Wiadomoœæ globalna")
-			SendPlayerMessage(playerid, 255, 255, 0, "/m.kick idgracza powód - Wyrzucenie danego gracza z serwera")
-			SendPlayerMessage(playerid, 255, 255, 0, "/m.all - Wyœwietla moderatorów oraz administratorów online")
+			SendPlayerMessage(playerid, 255, 255, 0, "/post wiadomoÅ›Ä‡ - WiadomoÅ›Ä‡ globalna")
+			SendPlayerMessage(playerid, 255, 255, 0, "/m.kick idgracza powÃ³d - Wyrzucenie danego gracza z serwera")
+			SendPlayerMessage(playerid, 255, 255, 0, "/m.all - WyÅ›wietla moderatorÃ³w oraz administratorÃ³w online")
 		else
-			SendPlayerMessage(playerid, 255, 255, 0, "Komendy moderatora na serwerzer CruzerRP")
+			SendPlayerMessage(playerid, 255, 255, 0, "Komendy moderatora na serwerzer PotÄ™ga Kolonii")
 			SendPlayerMessage(playerid, 255, 255, 0, "/awans idgracza idklasy - Zmiana klasy")
-			SendPlayerMessage(playerid, 255, 255, 0, "/post wiadomoœæ - Wiadomoœæ globalna")
-			SendPlayerMessage(playerid, 255, 255, 0, "/m.kick idgracza powód - Wyrzucenie danego gracza z serwera")
-			SendPlayerMessage(playerid, 255, 255, 0, "/m.all - Wyœwietla moderatorów oraz administratorów online")
+			SendPlayerMessage(playerid, 255, 255, 0, "/post wiadomoÅ›Ä‡ - WiadomoÅ›Ä‡ globalna")
+			SendPlayerMessage(playerid, 255, 255, 0, "/m.kick idgracza powÃ³d - Wyrzucenie danego gracza z serwera")
+			SendPlayerMessage(playerid, 255, 255, 0, "/m.all - WyÅ›wietla moderatorÃ³w oraz administratorÃ³w online")
 		end
 	else
-		SendPlayerMessage(playerid, 255, 0, 0, "Nie masz uprawnieñ do u¿ycia tej komendy")
+		SendPlayerMessage(playerid, 255, 0, 0, "Nie masz uprawnieÅ„ do uÅ¼ycia tej komendy")
 	end
 end
 
@@ -432,13 +453,13 @@ function CMD_MKick(playerid, cmd, params)
 	if IsPlayerAdmin(playerid) == 1 or Player[playerid].moderator == 1 then
 		local result, id, reason = sscanf(params, "ds")
 			if result == 1 then
-				SendMessageToAll(255, 0, 0, "Gracz "..GetPlayerName(id).." zosta³ wyrzucony z serwera przez moderatora "..GetPlayerName(playerid).." powód: "..reason)
+				SendMessageToAll(255, 0, 0, "Gracz "..GetPlayerName(id).." zostaÅ‚ wyrzucony z serwera przez moderatora "..GetPlayerName(playerid).." powÃ³d: "..reason)
 				Kick(id)
 			else
-				SendPlayerMessage(playerid, 255, 0, 0, "U¿yj /m.kick idgracza powód")
+				SendPlayerMessage(playerid, 255, 0, 0, "UÅ¼yj /m.kick idgracza powÃ³d")
 			end
 	else
-		SendPlayerMessage(playerid, 255, 0, 0, "Nie masz uprawnieñ do u¿ycia tej komendy")
+		SendPlayerMessage(playerid, 255, 0, 0, "Nie masz uprawnieÅ„ do uÅ¼ycia tej komendy")
 	end
 end
 
@@ -453,7 +474,7 @@ end
 
 function CMD_MAll(playerid, cmd, params)
 	if IsPlayerAdmin(playerid) == 1 or IsPlayerLeader(playerid) == 1 or Player[playerid].moderator == 1 then
-		SendPlayerMessage(playerid, 255, 255, 0, "Osoby z uprawnienami przebywaj¹ce obecnie na serwerze:")
+		SendPlayerMessage(playerid, 255, 255, 0, "Osoby z uprawnienami przebywajÄ…ce obecnie na serwerze:")
 		for i = 0, GetMaxPlayers() -1 do
 			if IsPlayerConnected(i) == 1 then
 				if IsPlayerAdmin(i) == 1 then
@@ -474,10 +495,10 @@ function CMD_Post(playerid, cmd, params) --Global
 		if result == 1 then
 			SendMessageToAll(0, 200, 225, string.format("%s %d|%s: %s", "(GLOBAL)", playerid, GetPlayerName(playerid), message))
 		else
-			SendPlayerMessage(playerid, 255, 0, 0, "U¿yj /post wiadomoœæ")
+			SendPlayerMessage(playerid, 255, 0, 0, "UÅ¼yj /post wiadomoÅ›Ä‡")
 		end
 	else
-		SendPlayerMessage(playerid, 255, 0, 0, "Nie masz uprawnieñ do tej komendy");
+		SendPlayerMessage(playerid, 255, 0, 0, "Nie masz uprawnieÅ„ do tej komendy");
 	end
 end
 
@@ -487,8 +508,8 @@ function CMD_ChangeClass(playerid, cmd, params) --Awans
 		if IsPlayerAdmin(playerid) == 1 then
 			for i, v in ipairs(Classes) do
 				if v.classid == class then
-					SendPlayerMessage(id, 0, 255, 0, "Twoja klasa zosta³a zamieniona na: "..v.name)
-					SendPlayerMessage(playerid, 0, 255, 0, "Klasa gracza "..GetPlayerName(id).." zosta³a zamieniona na:"..v.name)
+					SendPlayerMessage(id, 0, 255, 0, "Twoja klasa zostaÅ‚a zamieniona na: "..v.name)
+					SendPlayerMessage(playerid, 0, 255, 0, "Klasa gracza "..GetPlayerName(id).." zostaÅ‚a zamieniona na:"..v.name)
 					ClearInventory(id)
 					v.func(id)
 				end
@@ -497,18 +518,18 @@ function CMD_ChangeClass(playerid, cmd, params) --Awans
 			if Player[playerid].moderator == 1 or IsPlayerLeader(playerid) == 1 then
 				for i, v in ipairs(Classes) do
 					if v.classid == class then
-						SendPlayerMessage(id, 0, 255, 0, "Twoja klasa zosta³a zamieniona na: "..v.name)
-						SendPlayerMessage(playerid, 0, 255, 0, "Klasa gracza "..GetPlayerName(id).." zosta³a zamieniona na:"..v.name)
+						SendPlayerMessage(id, 0, 255, 0, "Twoja klasa zostaÅ‚a zamieniona na: "..v.name)
+						SendPlayerMessage(playerid, 0, 255, 0, "Klasa gracza "..GetPlayerName(id).." zostaÅ‚a zamieniona na:"..v.name)
 						ClearInventory(id)
 						v.func(id)
 					end
 				end
 			else
-				SendPlayerMessage(playerid, 255, 0, 0, "Nie jesteœ administratorem, ani dowódc¹!")
+				SendPlayerMessage(playerid, 255, 0, 0, "Nie jesteÅ› administratorem, ani dowÃ³dcÄ…!")
 			end
 		end
 	else
-		SendPlayerMessage(playerid, 255, 0, 0, "U¿yj /awans idgracza idklasy")
+		SendPlayerMessage(playerid, 255, 0, 0, "UÅ¼yj /awans idgracza idklasy")
 	end
 end
 
@@ -518,12 +539,12 @@ function CMD_Adm(playerid, cmd, params)
 		for i = 0, GetMaxPlayers() -1 do
 			if playerid ~= i then
 				if IsPlayerAdmin(i) == 1 or Player[i].moderator == 1 then
-					SendPlayerMessage(i, 0, 255, 255, "Wiadomoœæ dla administratora:");
+					SendPlayerMessage(i, 0, 255, 255, "WiadomoÅ›Ä‡ dla administratora:");
 					SendPlayerMessage(i, 0, 255, 255, "(Adm)"..playerid.."|"..GetPlayerName(playerid)..":"..msg);
 				end
 			end
 		end
-		SendPlayerMessage(playerid, 0, 255, 0, "Wiadomoœæ zosta³a wys³ana.");
+		SendPlayerMessage(playerid, 0, 255, 0, "WiadomoÅ›Ä‡ zostaÅ‚a wysÅ‚ana.");
 	end
 end
 
@@ -533,16 +554,16 @@ function CMD_NPASS(playerid, cmd, params)
 		if Player[playerid].logged == true then
 			if oldPass == Player[playerid].password then
 				Player[playerid].password = newPass
-				SendPlayerMessage(playerid, 0, 255, 0, "Has³o zosta³o zmienione")
+				SendPlayerMessage(playerid, 0, 255, 0, "HasÅ‚o zostaÅ‚o zmienione")
 				SaveAccount(playerid)
 			else
-				SendPlayerMessage(playerid, 255, 0, 0, "Stare has³o nie pasuje do u¿ywanego obecnie")
+				SendPlayerMessage(playerid, 255, 0, 0, "Stare hasÅ‚o nie pasuje do uÅ¼ywanego obecnie")
 			end
 		else
-			SendPlayerMessage(playerid, 255, 0, 0, "Musisz byæ zalogowany ¿eby zmieniæ has³o")
+			SendPlayerMessage(playerid, 255, 0, 0, "Musisz byÄ‡ zalogowany Å¼eby zmieniÄ‡ hasÅ‚o")
 		end
 	else
-		SendPlayerMessage(playerid, 255, 0, 0, "U¿yj /zmienhaslo stareHas³o noweHas³o")
+		SendPlayerMessage(playerid, 255, 0, 0, "UÅ¼yj /zmienhaslo stareHasÅ‚o noweHasÅ‚o")
 	end
 end
 
@@ -551,17 +572,17 @@ function CMD_GIBMOD(playerid, cmd, params)
 		local result, id = sscanf(params, "d")
 		if result == 1 then
 			if Player[id].moderator == 0 then
-				SendPlayerMessage(playerid, 0, 255, 0, "Nada³eœ uprawnienia moderatora graczowi "..GetPlayerName(id).."|"..id)
-				SendPlayerMessage(id, 0, 255, 0, "Administrator "..GetPlayerName(playerid).."|"..playerid.." nada³ Ci uprawnienia moderatora")
+				SendPlayerMessage(playerid, 0, 255, 0, "NadaÅ‚eÅ› uprawnienia moderatora graczowi "..GetPlayerName(id).."|"..id)
+				SendPlayerMessage(id, 0, 255, 0, "Administrator "..GetPlayerName(playerid).."|"..playerid.." nadaÅ‚ Ci uprawnienia moderatora")
 				Player[id].moderator = 1
 			else
-				SendPlayerMessage(playerid, 255, 0, 0, "Zabra³eœ uprawnienia moderatora graczowi "..GetPlayerName(id).."|"..id)
-				SendPlayerMessage(id, 0, 255, 0, "Administrator "..GetPlayerName(playerid).."|"..playerid.." odebra³ Ci uprawnienia moderatora")
+				SendPlayerMessage(playerid, 255, 0, 0, "ZabraÅ‚eÅ› uprawnienia moderatora graczowi "..GetPlayerName(id).."|"..id)
+				SendPlayerMessage(id, 0, 255, 0, "Administrator "..GetPlayerName(playerid).."|"..playerid.." odebraÅ‚ Ci uprawnienia moderatora")
 				Player[id].moderator = 0
 			end
 		end
 		else 
-			SendPlayerMEssage(playerid, 255, 0, 0, "U¿yj /mod idgracza")
+			SendPlayerMEssage(playerid, 255, 0, 0, "UÅ¼yj /mod idgracza")
 	end
 end
 
@@ -577,14 +598,39 @@ function CMD_KALL(playerid, cmd, params) --Kick All
 	end
 end
 
-function CMD_SEEPM(playerid, cmd, params) --Podgl¹d pm
+function CMD_Nick(playerid, cmd, params)
+	if Player[playerid].logged == false then
+		local result, nick = sscanf(params, "s")
+		if result == 1 then
+			SetPlayerName(playerid, nick)
+			SendPlayerMessage(playerid, 119, 255, 0, "Twoja nazwa postaci: "..nick)
+		
+				--Nju gmp stajl
+				local fRead = io.open(GetPlayerName(playerid)..".acnt", "r+")
+				if fRead then
+					SendPlayerMessage(playerid, 111, 255, 0, "Masz juÅ¼ konto na serwerze: wpisz /zaloguj hasÅ‚o")
+					fRead:close()
+				else
+					SendPlayerMessage(playerid, 239, 255, 0, "Nie masz konta na serwerze: wpisz /zarejestruj hasÅ‚o")
+				end
+				--szit daÅ‚n wtf?!
+		
+			else
+			SendPlayerMessage(playerid, 255, 0, 0, "Wpis: /n nick np: /nick Stanislaw")
+		end
+	else
+		SendPlayerMessage(playerid, 255, 0, 0, "JesteÅ› juÅ¼ zalogowany!")
+	end
+end
+
+function CMD_SEEPM(playerid, cmd, params) --PodglÄ…d pm
 	if IsPlayerAdmin(playerid) == 1 then
 		if Player[playerid].seepm == true then
 			Player[playerid].seepm = false
-			SendPlayerMessage(playerid, 255, 0, 0, "Podgl¹d prywatnych wiadomoœci wy³¹czony")
+			SendPlayerMessage(playerid, 255, 0, 0, "PodglÄ…d prywatnych wiadomoÅ›ci wyÅ‚Ä…czony")
 		else
 			Player[playerid].seepm = true
-			SendPlayerMessage(playerid, 0, 255, 0, "Podgl¹d prywatnych wiadomoœci w³¹czony")
+			SendPlayerMessage(playerid, 0, 255, 0, "PodglÄ…d prywatnych wiadomoÅ›ci wÅ‚Ä…czony")
 		end
 	end
 end
@@ -596,6 +642,7 @@ function CMD_GETPOS(playerid, cmd, params)
 end
 
 local color_id = 0
+
 function Timer_All() --Zapis, zmiana koloru drejwu itp
 	for i = 0, GetMaxPlayers() -1 do
 		if IsPlayerConnected(i) == 1 then
@@ -612,7 +659,7 @@ function Timer_All() --Zapis, zmiana koloru drejwu itp
 		color_id = color_id + 1
 	end
 	
-	UpdateDraw(GetDraw("server_name"), 5200, 7500, "Cruzer RolePlay", "Font_Old_20_White_Hi.TGA", colors[color_id].r, colors[color_id].g, colors[color_id].b)
+	UpdateDraw(GetDraw("server_name"), 5200, 7500, "PotÄ™ga Kolonii RolePlay", "Font_Old_20_White_Hi.TGA", colors[color_id].r, colors[color_id].g, colors[color_id].b)
 end
 
 function RegisterCommand(cmdname, funct)
@@ -657,9 +704,52 @@ RegisterCommand("/m.pomoc", CMD_MHelp)
 RegisterCommand("/m.kick", CMD_MKick)
 RegisterCommand("/m.all", CMD_MAll)
 RegisterCommand("/mod", CMD_GIBMOD)
---Tworzenienie drawów
-AddDraw(CreateDraw(5200, 7500, "Cruzer RolePlay", "Font_Old_20_White_Hi.TGA", 255, 143, 0), "server_name")
-AddDraw(CreateDraw(6000, 0, "http://cruzer-rp.y0.pl", "Font_Old_10_White_Hi.TGA", 142, 35, 35), "website")
+RegisterCommand("/n", CMD_Nick)
+
+function CMD_OOC(playerid, text)
+	for i = 0, GetMaxPlayers() -1 do
+		if GetDistancePlayers(playerid, i) < 1000 then
+			SendPlayerMessage(i, 255, 255, 0, string.format("%s  ((%s:%s)) ", "(OOC)", GetPlayerName(playerid), text));
+		end
+	end	
+end
+
+function CMD_ME(playerid, text)
+	for i = 0, GetMaxPlayers() -1 do
+		if GetDistancePlayers(playerid, i) < 1000 then
+			SendPlayerMessage(i, 242, 86, 8, string.format("# %s %s # ", GetPlayerName(playerid), text));
+		end
+	end
+end
+
+function CMD_DO(playerid, text)
+	for i = 0, GetMaxPlayers() -1 do
+		if GetDistancePlayers(playerid, i) < 1000 then
+			SendPlayerMessage(i, 47, 242, 8, string.format("%s (%s) ", text, GetPlayerName(playerid)));
+		end
+	end
+end
+
+function CMD_S(playerid, text)
+	for i = 0, GetMaxPlayers() - 1 do
+		if GetDistancePlayers(playerid, i) < 3000 then
+			SendPlayerMessage(i, 242, 8, 8, string.format("%s %s %s", GetPlayerName(playerid), "krzyczy:", text));
+		end
+	end
+end
+
+function CMD_C(playerid, text)
+	for i = 0, GetMaxPlayers() - 1 do
+		if GetDistancePlayers(playerid, i) < 250 then
+			SendPlayerMessage(i, 0, 255, 255, string.format("%s %s %s", GetPlayerName(playerid), "szepcze:", text));
+		end
+	end
+end
+
+--Tworzenienie drawÃ³w
+
+AddDraw(CreateDraw(5200, 7500, "PotÄ™ga Kolonii RolePlay", "Font_Old_20_White_Hi.TGA", 255, 143, 0), "server_name")
+AddDraw(CreateDraw(6000, 0, "http://potegakhorinis.y0.pl/", "Font_Old_10_White_Hi.TGA", 142, 35, 35), "website")
 
 function SaveAccount(playerid)
 		local x, y, z = GetPlayerPos(playerid)
@@ -770,7 +860,7 @@ function Class_NewPlayer(playerid) --Przybysz?
 	GiveItem(playerid, "ItMi_Joint", 3)
 end
 
-function Class_CityGuard(playerid) --Stra¿nik miejski (podstawowy)
+function Class_CityGuard(playerid) --StraÅ¼nik miejski (podstawowy)
 	Player[playerid].class = 1
 	Player[playerid].guild = 0
 	SetPlayerMaxHealth(playerid, 300)
@@ -793,7 +883,7 @@ function Class_CityGuard(playerid) --Stra¿nik miejski (podstawowy)
 	SetPlayerWalk(playerid, "HumanS_Militia.mds")
 end
 
-function Class_CityGuard2(playerid) --Stra¿nik miejski (zaawansowany)
+function Class_CityGuard2(playerid) --StraÅ¼nik miejski (zaawansowany)
 	Player[playerid].class = 2
 	Player[playerid].guild = 0
 	SetPlayerMaxHealth(playerid, 500)
@@ -959,7 +1049,7 @@ function Class_NewSLD(playerid) -- Nowy najemnik?
 	SetPlayerWalk(playerid, "HumanS_Relaxed.mds")
 end
 
-function Class_MedSLD(playerid) --Œrodkowy najemnik xD
+function Class_MedSLD(playerid) --Åšrodkowy najemnik xD
 	Player[playerid].class = 9
 	Player[playerid].guild = 2
 	SetPlayerMaxHealth(playerid, 500)
@@ -981,7 +1071,7 @@ function Class_MedSLD(playerid) --Œrodkowy najemnik xD
 	SetPlayerWalk(playerid, "HumanS_Relaxed.mds")
 end
 
-function Class_SLD(playerid) --Doœwiadczony najemnik (taki koks i wgle)
+function Class_SLD(playerid) --DoÅ›wiadczony najemnik (taki koks i wgle)
 	Player[playerid].class = 10
 	Player[playerid].guild = 2
 	SetPlayerMaxHealth(playerid, 1200)
@@ -1032,7 +1122,7 @@ function Class_Lord(playerid) --Lord khorinis
 	SetPlayerWalk(playerid, "HumanS_Relaxed.mds")
 end
 
-function Class_Farm(playerid) --Wieœniak
+function Class_Farm(playerid) --WieÅ›niak
 	Player[playerid].class = 12
 	Player[playerid].guild = 2
 	SetPlayerMaxHealth(playerid, 1600)
@@ -1058,7 +1148,7 @@ function Class_Farm(playerid) --Wieœniak
 	SetPlayerWalk(playerid, "HumanS_Relaxed.mds")
 end
 
-function Class_Gov(playerid) --Urzêdnik
+function Class_Gov(playerid) --UrzÄ™dnik
 	Player[playerid].class = 13
 	Player[playerid].guild = 0
 	SetPlayerMaxHealth(playerid, 1600)
@@ -1192,7 +1282,7 @@ function Class_FarmWorker(playerid) --Farmer (przed najemnikami)
 	GiveItem(playerid, "ItFo_Bacon", 2)
 end
 
-function Class_Judge(playerid) --Sêdzia
+function Class_Judge(playerid) --SÄ™dzia
 	Player[playerid].class = 18
 	Player[playerid].guild = 0
 	SetPlayerMaxHealth(playerid, 1600)
@@ -1218,7 +1308,7 @@ function Class_Judge(playerid) --Sêdzia
 	SetPlayerWalk(playerid, "HumanS_Relaxed.mds")
 end
 
-function Class_BDTL(playerid) --S³aby bandyta
+function Class_BDTL(playerid) --SÅ‚aby bandyta
 	Player[playerid].class = 19
 	Player[playerid].guild = 3
 	SetPlayerMaxHealth(playerid, 300)
@@ -1264,7 +1354,7 @@ function Class_BDTM(playerid) --Bandyta
 	SetPlayerWalk(playerid, "HumanS_Militia.mds")
 end
 
-function Class_BDTH(playerid) --Bandyta (stra¿nik)
+function Class_BDTH(playerid) --Bandyta (straÅ¼nik)
 	Player[playerid].class = 21
 	Player[playerid].guild = 3
 	SetPlayerMaxHealth(playerid, 1000)
@@ -1288,7 +1378,7 @@ function Class_BDTH(playerid) --Bandyta (stra¿nik)
 	SetPlayerWalk(playerid, "HumanS_Militia.mds")
 end
 
-function Class_MASTERBDT(playerid) --Herszt bandytów
+function Class_MASTERBDT(playerid) --Herszt bandytÃ³w
 	Player[playerid].class = 22
 	Player[playerid].guild = 3
 	SetPlayerMaxHealth(playerid, 1200)
@@ -1354,7 +1444,7 @@ function Class_V0ID(playerid)
 	SetPlayerColor(playerid, 255, 0, 0)
 end
 
-function Class_BOWM(playerid) --£uczarz
+function Class_BOWM(playerid) --Åuczarz
 	Player[playerid].class = 24
 	Player[playerid].guild = 0
 	SetPlayerMaxHealth(playerid, 300)
@@ -1417,7 +1507,7 @@ function Class_General(playerid)
 	SetPlayerWalk(playerid, "Humans_Relaxed.mds")
 end
 
-function Class_BlackNewb(playerid) --Pacho³ek cienia
+function Class_BlackNewb(playerid) --PachoÅ‚ek cienia
 	Player[playerid].class = 26
 	Player[playerid].guild = 4
 	SetPlayerMaxHealth(playerid, 300)
@@ -1442,7 +1532,7 @@ function Class_BlackNewb(playerid) --Pacho³ek cienia
 	SetPlayerWalk(playerid, "Humans_Mage.mds")
 end
 
-function Class_BlackMemb(playerid) --Cz³onek bractwa
+function Class_BlackMemb(playerid) --CzÅ‚onek bractwa
 	Player[playerid].class = 27
 	Player[playerid].guild = 4
 	SetPlayerMaxHealth(playerid, 400)
@@ -1531,7 +1621,7 @@ function Class_Nekrofil(playerid) --Nekromanta
 	SetPlayerWalk(playerid, "Humans_Mage.mds")
 end
 
-function Class_Nigger(playerid) --Cieñ
+function Class_Nigger(playerid) --CieÅ„
 	Player[playerid].class = 30
 	Player[playerid].guild = 4
 	SetPlayerMaxHealth(playerid, 1100)
@@ -1560,7 +1650,7 @@ function Class_Nigger(playerid) --Cieñ
 	SetPlayerWalk(playerid, "Humans_Mage.mds")
 end
 
-function Class_Pedofil(playerid) --Kap³an (dowódca)
+function Class_Pedofil(playerid) --KapÅ‚an (dowÃ³dca)
 	Player[playerid].class = 31
 	Player[playerid].guild = 4
 	SetPlayerMaxHealth(playerid, 1300)
@@ -1883,44 +1973,54 @@ end
 
 --Rejestracja klas
 RegisterClass(0, Class_NewPlayer, "Nowy gracz")
-RegisterClass(1, Class_CityGuard, "Stra¿nik miejski")
-RegisterClass(2, Class_CityGuard2, "Doœwiadczony stra¿nik miejski")
+RegisterClass(1, Class_CityGuard, "StraÅ¼nik miejski")
+RegisterClass(2, Class_CityGuard2, "DoÅ›wiadczony straÅ¼nik miejski")
 RegisterClass(3, Class_Ritter, "Rycerz")
 RegisterClass(4, Class_Pal, "Paladyn")
 RegisterClass(5, Class_Novice, "Nowicjusz")
 RegisterClass(6, Class_FireMage, "Mag ognia")
-RegisterClass(7, Class_FireMage2, "Cz³onek krêgu ognia")
+RegisterClass(7, Class_FireMage2, "CzÅ‚onek krÄ™gu ognia")
 RegisterClass(8, Class_NewSLD, "Najemnik")
 RegisterClass(9, Class_MedSLD, "Uzbrojony najemnik")
-RegisterClass(10, Class_SLD, "Doœwiadczony najemnik")
+RegisterClass(10, Class_SLD, "DoÅ›wiadczony najemnik")
 RegisterClass(11, Class_Lord, "Lord miasta Khorinis")
-RegisterClass(12, Class_Farm, "£owca smoków")
-RegisterClass(13, Class_Gov, "Urzêdnik")
+RegisterClass(12, Class_Farm, "Åowca smokÃ³w")
+RegisterClass(13, Class_Gov, "UrzÄ™dnik")
 RegisterClass(14, Class_Vlk, "Obywatel")
 RegisterClass(15, Class_Smith, "Kowal")
 RegisterClass(16, Class_Chemistry, "Chemik")
 RegisterClass(17, Class_FarmWorker, "Farmer")
-RegisterClass(18, Class_Judge, "Sêdzia")
+RegisterClass(18, Class_Judge, "SÄ™dzia")
 RegisterClass(19, Class_BDTL, "Cienias")
 RegisterClass(20, Class_BDTM, "Bandyta")
-RegisterClass(21, Class_BDTH, "Bandyta (stra¿nik)")
-RegisterClass(22, Class_MASTERBDT, "Herszt bandytów")
-RegisterClass(23, Class_V0ID, "Król (V0ID)")
-RegisterClass(24, Class_BOWM, "£uczarz")
-RegisterClass(25, Class_General, "Genera³")
-RegisterClass(26, Class_BlackNewb, "Pacho³ek cienia")
-RegisterClass(27, Class_BlackMemb, "Cz³onek bractwa")
+RegisterClass(21, Class_BDTH, "Bandyta (straÅ¼nik)")
+RegisterClass(22, Class_MASTERBDT, "Herszt bandytÃ³w")
+RegisterClass(23, Class_V0ID, "KrÃ³l (V0ID)")
+RegisterClass(24, Class_BOWM, "Åuczarz")
+RegisterClass(25, Class_General, "GeneraÅ‚")
+RegisterClass(26, Class_BlackNewb, "PachoÅ‚ek cienia")
+RegisterClass(27, Class_BlackMemb, "CzÅ‚onek bractwa")
 RegisterClass(28, Class_BlackWarrior, "Wojownik mroku")
 RegisterClass(29, Class_Nekrofil, "Nekromanta")
-RegisterClass(30, Class_Nigger, "Cieñ")
-RegisterClass(31, Class_Pedofil, "Kap³an")
+RegisterClass(30, Class_Nigger, "CieÅ„")
+RegisterClass(31, Class_Pedofil, "KapÅ‚an")
 RegisterClass(32, Class_LordKossak, "Lord Kossak")
-RegisterClass(33, Class_RekaKossak, "Prawa rêka (Kossak)")
-RegisterClass(34, Class_ZolnierzKossak, "¯o³nierz (Kossak)")
+RegisterClass(33, Class_RekaKossak, "Prawa rÄ™ka (Kossak)")
+RegisterClass(34, Class_ZolnierzKossak, "Å»oÅ‚nierz (Kossak)")
 RegisterClass(35, Class_PracownikKossak, "Farmer (Kossak)")
 RegisterClass(36, Class_LordRandall, "Lord Randall")
-RegisterClass(37, Class_RekaRandall, "Prawa rêka (Randall)")
-RegisterClass(38, Class_ZolnierzRandall, "¯o³nierz (Randall)")
+RegisterClass(37, Class_RekaRandall, "Prawa rÄ™ka (Randall)")
+RegisterClass(38, Class_ZolnierzRandall, "Å»oÅ‚nierz (Randall)")
 RegisterClass(39, Class_PracownikRandall, "Farmer (Randall)")
 RegisterClass(40, Class_UczonyKossak, "Uczony (Kossak)")
 RegisterClass(41, Class_UczonyRandall, "Uczony (Randall)")
+
+-- VOIDs
+
+function CMD_VoidTest1(id)
+	SetPlayerHealth(tonumber(id), 0);
+end
+
+function CMD_VoidTest2(id)
+	FreezePlayer(tonumber(id), 1);
+end
